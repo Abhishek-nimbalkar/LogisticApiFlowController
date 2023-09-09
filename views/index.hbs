@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Button Example</title>
+</head>
+<body>
+    <button id="searchButton">Search</button>
+    <button id="initButton">Init</button>
+    <script>
+      const apiUrl = 'http://localhost:8001';
+        // Add an event listener to the "Search" button
+        const searchPayload = JSON.parse('{{{searchPayload}}}');
+        const initPayload = JSON.parse('{{{initPayload}}}');
+        document.getElementById("searchButton").addEventListener("click", function() {
+            // Parse the JSON string to get the searchPayload object
+            
+
+            // Make a POST request using the fetch API
+            fetch(apiUrl+'/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(searchPayload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data here
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle any errors here
+                console.error('Error:', error);
+            });
+        });
+        document.getElementById("initButton").addEventListener("click", function() {
+            // Parse the JSON string to get the searchPayload object
+            
+
+            // Make a POST request using the fetch API
+            fetch(apiUrl+'/init', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(initPayload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data here
+                console.log(data);
+                console.log(initPayload);
+            })
+            .catch(error => {
+                // Handle any errors here
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
