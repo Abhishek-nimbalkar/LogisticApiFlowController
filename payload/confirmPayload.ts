@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { bap_uri } from './searchPayload';
 const order_id = faker.string.uuid();
 const message_id = faker.string.uuid();
 const timestamp = new Date().toISOString();
@@ -9,6 +8,7 @@ export const confirmPayload = (
   full_id: string,
   quote: any,
   billing: { created_at: string; updated_at: string },
+  bap_uri: string,
 ) => {
   return {
     context: {

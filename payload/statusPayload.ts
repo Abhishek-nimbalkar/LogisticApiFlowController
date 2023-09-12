@@ -1,8 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { bap_uri } from './searchPayload';
 const message_id = faker.string.uuid();
 const timestamp = new Date().toISOString();
-export const statusPayload = (order_id: string, transaction_id: string) => {
+export const statusPayload = (
+  order_id: string,
+  transaction_id: string,
+  bap_uri: string,
+) => {
   return {
     context: {
       domain: 'nic2004:60232',

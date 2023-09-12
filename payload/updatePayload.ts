@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { bap_uri } from './searchPayload';
+
 const message_id = faker.string.uuid();
 const timestamp = new Date().toISOString();
 export const updatePayload = (
   order_id: string,
   transaction_id: string,
   fulfillment_id: string,
+  bap_uri: string,
 ) => {
   return {
     context: {
