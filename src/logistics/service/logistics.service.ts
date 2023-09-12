@@ -6,13 +6,16 @@ import { searchPayload, bap_uri } from 'payload/searchPayload';
 import axios from 'axios';
 import { Request } from 'express';
 import { initPayload } from 'payload/initPayload';
-// import { URL } from './dto/create-logistic.dto';
+import { updatePayload } from 'payload/updatePayload';
 import { confirmPayload } from 'payload/confirmPayload';
 import { creatJson } from 'src/utils/fileWrite';
+import { statusPayload } from 'payload/statusPayload';
 @Injectable()
 export class LogisticsService {
   initBody: any;
   confirmBody: any;
+  updateBody: any;
+  statusBody: any;
   async search() {
     console.log('something in search');
 
@@ -51,7 +54,18 @@ export class LogisticsService {
     const trx_id = req.body?.context?.transaction_id;
     const provider_id = req.body?.message?.order?.provider?.id;
     const full_id = req.body?.message?.order?.fulfillments[0]?.id;
-    this.confirmBody = confirmPayload(trx_id, provider_id, full_id);
+    const quote = req.body?.message?.order?.quote;
+    const billing = {
+      created_at: this.initBody.message?.order?.billing?.created_at,
+      updated_at: this.initBody.message?.order?.billing?.updated_at,
+    };
+    this.confirmBody = confirmPayload(
+      trx_id,
+      provider_id,
+      full_id,
+      quote,
+      billing,
+    );
     // console.log(
     //   'On_ConfirmBodyBy===============',
     //   JSON.stringify(this.confirmBody),
@@ -71,14 +85,45 @@ export class LogisticsService {
   async on_confirm(req: Request) {
     // console.log('On_Confirm===============', JSON.stringify(req.body));
     creatJson('/on_confirm.json', req.body);
-    // const trx_id = req.body?.context?.transaction_id;
-    // const provider_id = req.body?.message?.order?.provider?.id;
-    // const full_id = req.body?.message?.order?.fulfillments[0]?.id;
-    // this.confirmBody = confirmPayload(trx_id, provider_id, full_id);
-    // console.log(
-    //   'On_ConfirmBodyBy===============',
-    //   JSON.stringify(this.confirmBody),
-    // );
+    const order_id = req.body?.message?.order?.id;
+    const trx_id = req.body?.context?.transaction_id;
+    const full_id = req.body?.message?.order?.fulfillments[0]?.id;
+    this.updateBody = updatePayload(order_id, trx_id, full_id);
     return { message: 'on_confirm was hit' };
+  }
+  async update() {
+    const res = await axios.post(
+      'http://localhost:8001/update',
+      this.updateBody,
+    );
+    creatJson('/update.json', this.updateBody);
+    console.log('res', res.data);
+    return res.data;
+  }
+  async on_update(req: Request) {
+    // console.log('On_Confirm===============', JSON.stringify(req.body));
+    creatJson('/on_update.json', req.body);
+    const order_id = req.body?.message?.order?.id;
+    const trx_id = req.body?.context?.transaction_id;
+    this.statusBody = statusPayload(order_id, trx_id);
+    return { message: 'on_update was hit' };
+  }
+  async status() {
+    const res = await axios.post(
+      'http://localhost:8001/status',
+      this.statusBody,
+    );
+    creatJson('/status.json', this.statusBody);
+    console.log('res', res.data);
+    return res.data;
+  }
+  async on_status(req: Request) {
+    // console.log('On_Confirm===============', JSON.stringify(req.body));
+    creatJson('/on_status.json', req.body);
+    // const order_id = req.body?.message?.order?.id;
+    // const trx_id = req.body?.context?.transaction_id;
+    // const full_id = req.body?.message?.order?.fulfillments[0]?.id;
+    // this.updateBody = updatePayload(order_id, trx_id, full_id);
+    return { message: 'on_status was hit' };
   }
 }

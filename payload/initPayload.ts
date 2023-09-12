@@ -25,11 +25,6 @@ export const initPayload = (providerId: string, ff_id: string) => {
       order: {
         provider: {
           id: providerId,
-          locations: [
-            {
-              id: '64f1bb471d58d44f5c8f4134',
-            },
-          ],
         },
         items: [
           {
@@ -97,8 +92,8 @@ export const initPayload = (providerId: string, ff_id: string) => {
           tax_number: 'XXXXXXXXXXXXXXX',
           phone: '9886098860',
           email: 'abcd.efgh@gmail.com',
-          created_at: '2023-09-04T10:17:35.540Z',
-          updated_at: '2023-09-04T10:17:35.540Z',
+          created_at: timestamp,
+          updated_at: timestamp,
         },
         payment: {
           '@ondc/org/settlement_details': [

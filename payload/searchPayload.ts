@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-export const bap_uri = 'https://c55a-112-196-2-205.ngrok-free.app';
+export const bap_uri = 'https://bbcf-112-196-2-205.ngrok-free.app';
 
 const transaction_id = faker.string.uuid();
 export const message_id = faker.string.uuid();

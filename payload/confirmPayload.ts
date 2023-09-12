@@ -1,9 +1,14 @@
 import { faker } from '@faker-js/faker';
+import { bap_uri } from './searchPayload';
 const order_id = faker.string.uuid();
+const message_id = faker.string.uuid();
+const timestamp = new Date().toISOString();
 export const confirmPayload = (
   trx_id: string,
   provider_id: string,
   full_id: string,
+  quote: any,
+  billing: { created_at: string; updated_at: string },
 ) => {
   return {
     context: {
@@ -13,12 +18,12 @@ export const confirmPayload = (
       action: 'confirm',
       core_version: '1.2.0',
       bap_id: 'logistics_buyer.com',
-      bap_uri: '{{bap_uri}}',
+      bap_uri: bap_uri,
       bpp_id: 'lsp.com',
       bpp_uri: 'https://lsp.com/ondc',
       transaction_id: trx_id,
-      message_id: '8b205cae-3617-4789-8a0d-ccf0c6b55e4',
-      timestamp: '2023-09-04T10:38:40.990Z',
+      message_id: message_id,
+      timestamp: timestamp,
       ttl: 'PT30S',
     },
     message: {
@@ -35,7 +40,7 @@ export const confirmPayload = (
         },
         items: [
           {
-            id: 'c5f6d07a-852a-45c6-aa62-4f334d9e34af',
+            id: 'ty',
             fulfillment_id: full_id,
             category_id: 'Immediate Delivery',
             descriptor: {
@@ -49,34 +54,13 @@ export const confirmPayload = (
           },
         ],
         quote: {
-          price: {
-            currency: 'INR',
-            value: '61.05',
-          },
-          breakup: [
-            {
-              '@ondc/org/item_id': 'I1',
-              '@ondc/org/title_type': 'delivery',
-              price: {
-                currency: 'INR',
-                value: '55.50',
-              },
-            },
-            {
-              '@ondc/org/item_id': 'I1',
-              '@ondc/org/title_type': 'tax',
-              price: {
-                currency: 'INR',
-                value: '5.55',
-              },
-            },
-          ],
+          price: quote.price,
+          breakup: quote.breakup,
         },
         fulfillments: [
           {
             id: full_id,
             type: 'Delivery',
-            '@ondc/org/awb_no': '1227262193237777',
             start: {
               time: {
                 duration: 'PT15M',
@@ -157,22 +141,12 @@ export const confirmPayload = (
           tax_number: 'XXXXXXXXXXXXXXX',
           phone: '9886098860',
           email: 'abcd.efgh@gmail.com',
-          created_at: '2023-09-04T10:24:39.990Z',
-          updated_at: '2023-09-04T10:24:39.990Z',
+          created_at: billing.created_at,
+          updated_at: billing.updated_at,
         },
         payment: {
           '@ondc/org/collection_amount': '300.00',
-          collected_by: 'BPP',
           type: 'ON-FULFILLMENT',
-          '@ondc/org/settlement_details': [
-            {
-              settlement_counterparty: 'buyer-app',
-              settlement_type: 'upi',
-              upi_address: 'gft@oksbi',
-              settlement_bank_account_no: 'XXXXXXXXXX',
-              settlement_ifsc_code: 'XXXXXXXXX',
-            },
-          ],
         },
         '@ondc/org/linked_order': {
           items: [

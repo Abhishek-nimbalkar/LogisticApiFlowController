@@ -1,15 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { LogisticsService } from './logistics.service';
+import { LogisticsService } from '../service/logistics.service';
 
 @Controller()
 export class LogisticsController {
@@ -37,7 +28,23 @@ export class LogisticsController {
     return this.logisticsService.confirm();
   }
   @Post('/on_confirm')
-  on_confirm() {
-    return this.logisticsService.on_confirm;
+  on_confirm(@Req() req: Request) {
+    return this.logisticsService.on_confirm(req);
+  }
+  @Post('/update')
+  update() {
+    return this.logisticsService.update();
+  }
+  @Post('/on_update')
+  on_update(@Req() req: Request) {
+    return this.logisticsService.on_update(req);
+  }
+  @Post('/status')
+  status() {
+    return this.logisticsService.status();
+  }
+  @Post('/on_status')
+  on_status(@Req() req: Request) {
+    return this.logisticsService.on_status(req);
   }
 }
