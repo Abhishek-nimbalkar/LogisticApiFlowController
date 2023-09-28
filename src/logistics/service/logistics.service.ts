@@ -10,6 +10,7 @@ import { updatePayload } from 'payload/updatePayload';
 import { confirmPayload } from 'payload/confirmPayload';
 import { creatJson } from 'src/utils/fileWrite';
 import { statusPayload } from 'payload/statusPayload';
+import { faker } from '@faker-js/faker';
 @Injectable()
 export class LogisticsService {
   searchBody: any;
@@ -18,7 +19,7 @@ export class LogisticsService {
   updateBody: any;
   statusBody: any;
   async search(req: Request) {
-    console.log('something in search');
+    // console.log('something in search');
     const url: string = req.body.lsp_uri + '/search';
     this.searchBody = searchPayload(req.body.bap_uri);
     const res = await axios.post(url, this.searchBody);
@@ -36,6 +37,7 @@ export class LogisticsService {
       req?.body?.message?.catalog['bpp/providers'][0]?.id,
       req?.body?.message?.catalog['bpp/providers'][0]?.fulfillments[0]?.id,
       req.body?.context?.bap_uri,
+      req?.body?.message?.catalog['bpp/providers'][0]?.items,
     );
     // console.log(
     //   'initBody=========',
@@ -133,5 +135,113 @@ export class LogisticsService {
     // const full_id = req.body?.message?.order?.fulfillments[0]?.id;
     // this.updateBody = updatePayload(order_id, trx_id, full_id);
     return { message: 'on_status was hit' };
+  }
+  async getLocation(data: any) {
+    function generateRandomCoordinateWithinRadius(
+      coordinates,
+      radiusInKilometers,
+    ) {
+      // Earth's radius in kilometers
+      const earthRadius = 6371;
+
+      // Convert latitude and longitude from degrees to radians
+      const [lat, lon] = coordinates.map((deg) => deg * (Math.PI / 180));
+
+      // Generate a random angle and distance within the radius
+      const randomAngle = Math.random() * 2 * Math.PI;
+      const randomDistance = Math.random() * radiusInKilometers;
+
+      // Calculate the new latitude and longitude
+      const newLat =
+        lat + (randomDistance / earthRadius) * Math.cos(randomAngle);
+      const newLon =
+        lon + (randomDistance / earthRadius) * Math.sin(randomAngle);
+
+      // Convert the new latitude and longitude back to degrees
+      const newCoordinates = [
+        +(newLat * (180 / Math.PI)).toFixed(6),
+        +(newLon * (180 / Math.PI)).toFixed(6),
+      ];
+
+      return newCoordinates;
+    }
+    const array = [];
+    for (let i = 0; i < 10; i++) {
+      const mobile = faker.number.int({ min: 7000000000, max: 9999999999 });
+
+      const fullName = faker.person.fullName();
+
+      // Split the full name into first name and last name
+      const nameParts = fullName.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join('');
+
+      const email = `${firstName}.${lastName}@gmail.com`;
+      const x = {
+        name: fullName,
+        email: email,
+        mobile: mobile,
+        firstName: firstName,
+        lastName: lastName,
+        dob: `${faker.number.int({ min: 1, max: 29 })}-${faker.number.int({
+          min: 1,
+          max: 12,
+        })}-${faker.number.int({ min: 1900, max: 2000 })}`,
+        password: faker.internet.password(),
+        isAvailable: true,
+        isOnline: false,
+        enabled: true,
+        isSystemGeneratedPassword: true,
+        deliveryExperience: 2,
+        KYCDetails: {
+          PANdetails: faker.string.hexadecimal({ length: 10 }),
+          addressProof: 'https://example.com/addressproof10.pdf',
+          IDproof: 'https://example.com/idproof10.pdf',
+          PANcard: 'https://example.com/pancard10.pdf',
+          aadhaarNumber: faker.string.numeric({ length: 16 }),
+          drivingLicense: faker.string.hexadecimal({ length: 12 }),
+        },
+        bankDetails: {
+          accountHolderName: faker.person.fullName(),
+          accountNumber: faker.string.numeric({ length: 11 }),
+          bankName: 'HDFC Bank',
+          branchName: 'Bangalore Whitefield',
+          IFSCcode: 'HDFC0000130',
+          cancelledCheque: 'https://example.com/cancelledcheque10.pdf',
+        },
+        addressDetails: data.addressDetails,
+        vehicleDetails: {
+          vehicleNumber: 'KA 54 XYZ 1234',
+          brandName: 'Maruti Suzuki',
+          ownerType: 'first owner',
+          makeYear: '2020',
+          intercity: 'no',
+          vehicleRegistrationDocument:
+            'https://example.com/vehicleregistration10.pdf',
+          maxWeightCapacity: {
+            weight: 160,
+            unit: 'kg',
+          },
+        },
+        currentLocation: {
+          coordinates: generateRandomCoordinateWithinRadius(
+            data.addressDetails.location.coordinates,
+            4,
+          ),
+        },
+        emailNotification: true,
+        whatsAppNotification: true,
+        deliveryType: [
+          'Immediate Delivery',
+          'Standard Delivery',
+          'Same Day Delivery',
+          'Express Delivery',
+        ],
+        basePrice: faker.number.int({ min: 20, max: 100 }),
+        pricePerkilometer: faker.number.int({ min: 5, max: 20 }),
+      };
+      array.push(x);
+    }
+    return array;
   }
 }

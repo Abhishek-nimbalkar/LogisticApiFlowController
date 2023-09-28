@@ -62,12 +62,12 @@ export const searchPayload = (bap_uri: string) => {
         '@ondc/org/payload_details': {
           weight: {
             unit: 'kilogram',
-            value: 4,
+            value: 5,
           },
           dimensions: {
             length: {
               unit: 'centimeter',
-              value: 10,
+              value: 15,
             },
             breadth: {
               unit: 'centimeter',
@@ -81,7 +81,7 @@ export const searchPayload = (bap_uri: string) => {
           category: 'Grocery',
           value: {
             currency: 'INR',
-            value: '500.00',
+            value: '300.00',
           },
           dangerous_goods: false,
         },

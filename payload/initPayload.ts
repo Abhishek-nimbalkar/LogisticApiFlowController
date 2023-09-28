@@ -7,7 +7,20 @@ export const initPayload = (
   providerId: string,
   ff_id: string,
   bap_uri: string,
+  items: any,
 ) => {
+  const newItems = [];
+  items.forEach((item: any) => {
+    if (item.id !== 'rto')
+      newItems.push({
+        id: item.id,
+        fulfillment_id: ff_id,
+        category_id: item?.category_id,
+        descriptor: {
+          code: item?.descriptor?.code,
+        },
+      });
+  });
   return {
     context: {
       domain: 'nic2004:60232',
@@ -29,16 +42,7 @@ export const initPayload = (
         provider: {
           id: providerId,
         },
-        items: [
-          {
-            id: 'c5f6d07a-852a-45c6-aa62-4f334d9e34af',
-            fulfillment_id: ff_id,
-            category_id: 'Immediate Delivery',
-            descriptor: {
-              code: 'P2P',
-            },
-          },
-        ],
+        items: newItems,
         fulfillments: [
           {
             id: ff_id,
@@ -99,16 +103,8 @@ export const initPayload = (
           updated_at: timestamp,
         },
         payment: {
-          '@ondc/org/settlement_details': [
-            {
-              settlement_counterparty: 'buyer-app',
-              settlement_type: 'upi',
-              beneficiary_name: 'xxxxx',
-              upi_address: 'gft@oksbi',
-              settlement_bank_account_no: 'XXXXXXXXXX',
-              settlement_ifsc_code: 'XXXXXXXXX',
-            },
-          ],
+          type: 'ON-FULFILLMENT',
+          '@ondc/org/collection_amount': '300.00',
         },
       },
     },

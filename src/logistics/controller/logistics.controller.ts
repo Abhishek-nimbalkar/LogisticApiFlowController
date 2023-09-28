@@ -1,4 +1,4 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { LogisticsService } from '../service/logistics.service';
 
@@ -46,5 +46,9 @@ export class LogisticsController {
   @Post('/on_status')
   on_status(@Req() req: Request) {
     return this.logisticsService.on_status(req);
+  }
+  @Get('/distance')
+  getDistance(@Body() data: any) {
+    return this.logisticsService.getLocation(data);
   }
 }
